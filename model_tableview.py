@@ -60,7 +60,6 @@ class Model(QtCore.QAbstractTableModel):
         self.col_spin = {0: 'imit', 1: 'priority', 2: 'name', 3: 'logix', 4: 'inv', 5: 'io_val'}
         if Num >= 0: #номер выбранного элемента
             self.sign = self.__create_dict_sign(spin[Num].params['sign'])
-            #self.sign = spin[Num].params['sign']['DO'] #словарь сигналов - пока только DO
 
     def __create_dict_sign(self, sign): # все сигналы DI DO AI AO в словарь _sign   !!!Пока все сигналы, потом только привязаные к io
         _sign = {}
@@ -88,7 +87,7 @@ class Model(QtCore.QAbstractTableModel):
         return _sign
 
     def update_model(self, sign):
-        self.sign = self.__create_dict_sign(sign) #['DO'] #словарь сигналов - пока только DO
+        self.sign = self.__create_dict_sign(sign) #словарь сигналов
         #print('upd_model ', self.sign)
         #self.layoutAboutToBeChanged.emit()
         #self.dataChanged.emit(self.createIndex(0, 0), self.createIndex(self.rowCount(0), self.columnCount(0)))
@@ -157,3 +156,4 @@ class CustomTableView(QTableView):
                 if self.parent.Num >= 0:
                     obj = self.parent.spin[self.parent.Num]
                     obj._update()
+
