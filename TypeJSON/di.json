@@ -1,0 +1,25 @@
+{
+	"num": 0,
+	"name": "",
+	"typ_name": "Дискретный сигнал",
+	"typ": 0,
+	"ind_stackedWidget": 1,
+	"sign": {	"DI": {},
+			"DO": {
+				"1": {
+					"imit": 0,
+					"priority": 3,
+					"name": "Сигнал",
+					"logix": 0,
+					"inv": 0,
+					"io_val": 0,
+					"io": "---",
+					"MW": -1,
+					"i": -1
+				      }
+			       },
+			"AI": {},
+			"AO": {}
+		  },
+	"timer": {}
+}
