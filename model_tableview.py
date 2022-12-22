@@ -44,7 +44,7 @@ class MyDelegate(QStyledItemDelegate):
                 #painter.setBrush(Qt.darkGreen)
                 painter.fillRect(option.rect, Qt.darkGreen)  # выделить ячейку цветом
             txt = index.data()[1]
-            painter.drawText(option.rect, Qt.AlignLeft | Qt.AlignVCenter, txt)
+            painter.drawText(option.rect, Qt.AlignCenter, txt)
         else:
             QStyledItemDelegate.paint(self, painter, option, index)
 

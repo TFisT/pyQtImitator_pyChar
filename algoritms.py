@@ -24,8 +24,15 @@ class cl_Algoritm(QThread):
                     obj = self.th_spin[i]
                     obj.Algoritm()
 
-                    #все DO из всех элементов переносим в wrMW
-                    for DO in self.th_spin[i].params['sign']['DO'].values():
+                    #обработка всех DI для всех элементов
+                    for DI in obj.params['sign']['DI'].values():
+                        #rdMW -> spin['DI']['io_val']
+                        if (DI['MW'] != -1) and (DI['i'] != -1): #модуль и канал выбран = слово и бит установлены
+                            bi = 0x0001 << DI['i']  # в слове bi устанавливаем бит i (остальные биты = 0)
+                            DI['io_val'] = (rdMW[DI['MW']] & bi != 0)
+
+                    #обработка всех DO для всех элементов
+                    for DO in obj.params['sign']['DO'].values():
 
                         # приоритета состояния сигнала в колонке «Имитировать» над сигналом в колонке «Контакт»
                         if DO['priority'] == 1:
@@ -38,7 +45,7 @@ class cl_Algoritm(QThread):
                         else:
                             DO['io_val'] = not vDO
 
-                        #spin[DO] -> wrMV
+                        #spin['DO']['io_val'] -> wrMW
                         if (DO['MW'] != -1) and (DO['i'] != -1): #модуль и канал выбран = слово и бит установлены
                             # установить/сбросить в слове MW бит i в значение DO['io_val']
                             bi = 0x0001 << DO['i'] # в слове bi устанавливаем бит i (остальные биты = 0)
@@ -49,10 +56,12 @@ class cl_Algoritm(QThread):
 
                     obj.update() #обновить все элементы в spinArea
 
+
                 #print(wrMW[0])
                 if self.parent.Num != -1:
                     self.parent.model.update_model(self.th_spin[self.parent.Num].params['sign'])  # обновляет таблицу table для выбранного элемента
                     self.parent.modelTm.update_model(self.th_spin[self.parent.Num].tm)  # обновляет таблицу tableTm для выбранного элемента
+
 
                 sleep(0.1) # 100 мс
 

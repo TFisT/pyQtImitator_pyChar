@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QLabel, QFrame
 from PyQt5.QtCore import Qt, pyqtSignal, QRect
 from PyQt5.QtGui import QPainter
 from Timer import clTimer
@@ -30,6 +30,7 @@ class cl_zd(QWidget):
             self.tm[key].SP = self.params['timer'][key]['SP']
 
     def paintEvent(self, event):
+        print(self.params['sign'])
         painter = QPainter(self)
         painter.begin(self)
         painter.drawRect(0, 0, 99, 99)

@@ -41,7 +41,7 @@ class Window(QMainWindow):
         self.Cnt_columns = 4 #количество столбцов в ScrollArea
         self.tmOneSec = 0
 
-        self.setMinimumSize(QSize(900, 468))  # Устанавливаем размеры
+        self.setMinimumSize(QSize(1000, 468))  # Устанавливаем размеры
         self.setWindowTitle("Имитатор основное окно")  # Устанавливаем заголовок окна
         #self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.WindowCloseButtonHint) # делаем окно onTop
         h_layout = QHBoxLayout()
@@ -71,10 +71,10 @@ class Window(QMainWindow):
         #self.table.resizeColumnsToContents()
         self.table.setColumnWidth(0, 84)
         self.table.setColumnWidth(1, 25)
-        self.table.setColumnWidth(2, 155)
+        self.table.setColumnWidth(2, 200)
         self.table.setColumnWidth(3, 25)
         self.table.setColumnWidth(4, 25)
-        self.table.setColumnWidth(5, 60)
+        self.table.setColumnWidth(5, 64)
 
         self.tableTm = QTableView(self)
         self.tableTm.setFocusPolicy(Qt.NoFocus)
@@ -241,7 +241,6 @@ class Window(QMainWindow):
         input_validator = QRegExpValidator(reg_ex, self.name_lineEdit)
         self.name_lineEdit.setValidator(input_validator)
 
-
     '''
         # Создание нового окна
         self.button = QPushButton('Создать окно', self)
@@ -279,25 +278,6 @@ class Window(QMainWindow):
         self.new_window.show()
     '''
 
-    """
-    @QtCore.pyqtSlot(QtWidgets.QTableWidgetItem)
-    def onClicked(self, it):
-
-        row = it.row()
-        col = it.column()
-        print("_left_", row, col)
-        #state = not it.data(SelectedRole)
-        #it.setData(SelectedRole, state)
-        #it.setBackground(
-        #    QColor(100, 100, 100) if state else QColor(0, 0, 0)
-        #)
-
-    def createItem(self, text, flags):
-        tableWidgetItem = QTableWidgetItem(text)
-        tableWidgetItem.setFlags(flags)
-        return tableWidgetItem
-    """
-
     def ctrl_stackedWidget(self):
         if self.stackedWidget.currentIndex() == 0 or self.stackedWidget.currentIndex() == (self.stackedWidget.count() - 1):
             self.del_action.setEnabled(False)
@@ -318,6 +298,10 @@ class Window(QMainWindow):
             sel_obj = cl_sh
         elif typ == 2:
             sel_obj = cl_zd
+        # elif typ == 3:
+        #     sel_obj = cl_vs
+        # elif typ == 4:
+        #     sel_obj = cl_na
         return sel_obj
 
     def typ_Change(self, typ):
@@ -383,6 +367,7 @@ class Window(QMainWindow):
 
     def defOneSec(self, sec):   #меняет каждую секунду бит self.parent.tmOneSec
         self.tmOneSec = sec % 2
+        self.repaint()   # test !!! обновление экрана. Проблема update не вызывает paintEvent
 
     def run_modbus(self):
         self.run_mb.setEnabled(False)
