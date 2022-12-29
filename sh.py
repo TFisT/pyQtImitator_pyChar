@@ -40,7 +40,7 @@ class cl_sh(QWidget):
         painter = QPainter(self)
         painter.begin(self)
         painter.drawRect(0, 0, 99, 99)
-        if self.params['sign']['DO'][1]['imit'] == 1:    #A
+        if self.params['sign']['DO']['A']['imit'] == 1:    #A
             painter.setBrush(Qt.green)
         else:
             painter.setBrush(Qt.red)
@@ -72,11 +72,11 @@ class cl_sh(QWidget):
             dict_obj[1][2].clicked.connect(self.btn_reset)
 
     def btn_set(self):
-        self.params['sign']['DO'][1]['imit'] = 1 #A
+        self.params['sign']['DO']['A']['imit'] = 1 #A
         self._update()
 
     def btn_reset(self):
-        self.params['sign']['DO'][1]['imit'] = 0  #A
+        self.params['sign']['DO']['A']['imit'] = 0  #A
         self._update()
 
     def _update(self):
@@ -87,11 +87,12 @@ class cl_sh(QWidget):
         #self.tm[1].SP = 2000   # должно заноситься из структуры. Обязательно перед вызовом start
         self.tm[1].start()
 
-        self.tm[1].EN = (self.params['sign']['DO'][1]['imit'] == 0)  #A
+        self.tm[1].EN = (self.params['sign']['DO']['A']['imit'] == 0)  #A
         if self.tm[1].DN:
-            self.params['sign']['DO'][1]['imit'] = 1  #A
+            self.params['sign']['DO']['A']['imit'] = 1  #A
         #print(str(self.tm.ACC))
 
         # значение Логика = имитируемое значение
-        self.params['sign']['DO'][1]['logix'] = self.params['sign']['DO'][1]['imit']
+        # for DO in self.params['sign']['DO'].values():
+        #     DO['logix'] = DO['imit']
 

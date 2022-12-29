@@ -32,7 +32,7 @@ class cl_di(QWidget):
         painter = QPainter(self)
         painter.begin(self)
         painter.drawRect(0, 0, 99, 99)
-        if self.params['sign']['DO'][1]['imit'] == 1:    #CK
+        if self.params['sign']['DO']['CK']['imit'] == 1:    #CK
             painter.setBrush(Qt.green)
         else:
             painter.setBrush(Qt.red)
@@ -62,11 +62,11 @@ class cl_di(QWidget):
             dict_obj[1][2].clicked.connect(self.btn_reset)
 
     def btn_set(self):
-        self.params['sign']['DO'][1]['imit'] = 1 #CK
+        self.params['sign']['DO']['CK']['imit'] = 1 #CK
         self._update()
 
     def btn_reset(self):
-        self.params['sign']['DO'][1]['imit'] = 0 #CK
+        self.params['sign']['DO']['CK']['imit'] = 0 #CK
         self._update()
 
     def _update(self):

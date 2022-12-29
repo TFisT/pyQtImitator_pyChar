@@ -30,39 +30,39 @@ class cl_zd(QWidget):
             self.tm[key].SP = self.params['timer'][key]['SP']
 
     def paintEvent(self, event):
-        print(self.params['sign'])
+        #print(self.params['sign'])
         painter = QPainter(self)
         painter.begin(self)
         painter.drawRect(0, 0, 99, 99)
         painter.drawRect(57, 32, 4, 25)                                                 # прямоугольник под Аварией
 
-        if self.params['sign']['DO'][1]['io_val'] == 1:    #КВО
+        if self.params['sign']['DO']['КВО']['io_val'] == 1:    #КВО
             painter.setBrush(Qt.green)
         else: painter.setBrush(Qt.yellow)
         painter.drawRect(24, 38, 5, 34)                                                 # КВО
 
-        if self.params['sign']['DO'][2]['io_val'] == 1:    #КВЗ
+        if self.params['sign']['DO']['КВЗ']['io_val'] == 1:    #КВЗ
             painter.setBrush(Qt.green)
         else: painter.setBrush(Qt.yellow)
         painter.drawRect(90, 38, 5, 34)                                                 # КВЗ
 
-        if self.params['sign']['DO'][3]['io_val'] == 1:    #МПО
+        if self.params['sign']['DO']['МПО']['io_val'] == 1:    #МПО
             painter.setBrush(Qt.green)
             primitives(painter).draw_triangle(Qt.green, 84, 20, 10, primitives.UP)      # МПО
 
-        if self.params['sign']['DO'][4]['io_val'] == 1:    #МПЗ
+        if self.params['sign']['DO']['МПЗ']['io_val'] == 1:    #МПЗ
             painter.setBrush(Qt.yellow)
             primitives(painter).draw_triangle(Qt.yellow, 87, 20, 10, primitives.DOWN)       # МПЗ
 
-        if self.params['sign']['DO'][1]['io_val'] == 1 and self.params['sign']['DO'][2]['io_val'] == 1:  # КВО и КВО
-            if self.params['sign']['DO'][3]['io_val'] == 1:    #МПО
+        if self.params['sign']['DO']['КВО']['io_val'] == 1 and self.params['sign']['DO']['КВЗ']['io_val'] == 1:  # КВО и КВЗ
+            if self.params['sign']['DO']['МПО']['io_val'] == 1:    #МПО
                 if self.parent.tmOneSec == 0:
                     primitives(painter).draw_triangle(Qt.green, 29, 40, 30, primitives.RIGHT)  # Открывается
                     primitives(painter).draw_triangle(Qt.green, 90, 40, 30, primitives.LEFT)
                 else:
                     primitives(painter).draw_triangle(Qt.black, 29, 40, 30, primitives.RIGHT)
                     primitives(painter).draw_triangle(Qt.black, 90, 40, 30, primitives.LEFT)
-            elif self.params['sign']['DO'][4]['io_val'] == 1:  # МПЗ
+            elif self.params['sign']['DO']['МПЗ']['io_val'] == 1:  # МПЗ
                 if self.parent.tmOneSec == 0:
                     primitives(painter).draw_triangle(Qt.yellow, 29, 40, 30, primitives.RIGHT)  # Закрывается
                     primitives(painter).draw_triangle(Qt.yellow, 90, 40, 30, primitives.LEFT)
@@ -72,10 +72,10 @@ class cl_zd(QWidget):
             else:
                 primitives(painter).draw_triangle(Qt.green, 29, 40, 30, primitives.RIGHT)    # Промежуточное положение
                 primitives(painter).draw_triangle(Qt.yellow, 90, 40, 30, primitives.LEFT)
-        elif self.params['sign']['DO'][2]['io_val'] == 1:  # КВЗ
+        elif self.params['sign']['DO']['КВЗ']['io_val'] == 1:  # КВЗ
             primitives(painter).draw_triangle(Qt.green, 29, 40, 30, primitives.RIGHT)    # Открыта
             primitives(painter).draw_triangle(Qt.green, 90, 40, 30, primitives.LEFT)
-        elif self.params['sign']['DO'][1]['io_val'] == 1:    #КВО
+        elif self.params['sign']['DO']['КВО']['io_val'] == 1:    #КВО
             primitives(painter).draw_triangle(Qt.yellow, 29, 40, 30, primitives.RIGHT)    # Закрыта
             primitives(painter).draw_triangle(Qt.yellow, 90, 40, 30, primitives.LEFT)
         else:
@@ -83,21 +83,21 @@ class cl_zd(QWidget):
             primitives(painter).draw_triangle(Qt.gray, 90, 40, 30, primitives.LEFT)
 
 
-        if self.params['sign']['DO'][5]['io_val'] == 1 or self.params['sign']['DO'][6]['io_val'] == 1:    #Муфта (МВО) или (МВЗ)
+        if self.params['sign']['DO']['МВО']['io_val'] == 1 or self.params['sign']['DO']['МВЗ']['io_val'] == 1:    #Муфта (МВО) или (МВЗ)
             painter.setBrush(Qt.red)
             painter.drawRect(44, 48, 32, 16)                                                # Муфта
-            if self.params['sign']['DO'][5]['io_val'] == 1 and self.params['sign']['DO'][6]['io_val'] == 1:
+            if self.params['sign']['DO']['МВО']['io_val'] == 1 and self.params['sign']['DO']['МВЗ']['io_val'] == 1:
                 painter.drawText(50, 60, "2МВ")
-            elif self.params['sign']['DO'][5]['io_val'] == 1:
+            elif self.params['sign']['DO']['МВО']['io_val'] == 1:
                 painter.drawText(50, 60, "МВО")
             else: painter.drawText(50, 60, "МВЗ")
 
-        if self.params['sign']['DO'][7]['io_val'] == 1:    #Авария
+        if self.params['sign']['DO']['АВ']['io_val'] == 1:    #Авария
             painter.setBrush(Qt.red)
         else: painter.setBrush(Qt.green)
         painter.drawEllipse(51, 20, 16, 16)                                                 # Авария
 
-        if self.params['sign']['DO'][8]['io_val'] == 1:  # Дистанционное управление
+        if self.params['sign']['DO']['МД']['io_val'] == 1:  # Дистанционное управление
             painter.setBrush(Qt.green)
             painter.drawRect(25, 18, 16, 16)                                                 # М/Д
             painter.drawText(30, 30, "Д")
@@ -109,16 +109,16 @@ class cl_zd(QWidget):
             painter.setPen(Qt.black)
 
         painter.setBrush(Qt.red)
-        if self.params['sign']['DO'][9]['io_val'] == 0:  # Исправность цепи закрытия
+        if self.params['sign']['DO']['ЦЗ']['io_val'] == 0:  # Исправность цепи закрытия
             rect = QRect(3, 38, 18, 16)
             painter.drawRect(rect)                                                 # ЦЗ
             painter.drawText(rect, Qt.AlignCenter, "ЦЗ")
-        if self.params['sign']['DO'][10]['io_val'] == 0:  # Исправность цепи открытия
+        if self.params['sign']['DO']['ЦО']['io_val'] == 0:  # Исправность цепи открытия
             rect = QRect(3, 56, 18, 16)
             painter.drawRect(rect)                                                 # ЦО
             painter.drawText(rect, Qt.AlignCenter, "ЦО")
 
-        if self.params['sign']['DO'][11]['io_val'] == 0:  # Контроль напряжения питания
+        if self.params['sign']['DO']['U']['io_val'] == 0:  # Контроль напряжения питания
             painter.drawEllipse(4, 75, 16, 16)                                              # Наличие напряжения
             painter.drawText(10, 87, "U")
 
@@ -153,11 +153,11 @@ class cl_zd(QWidget):
             dict_obj[1][2].clicked.connect(self.btn_reset)
 
     def btn_set(self):
-        self.params['sign']['DO'][1]['imit'] = 1 #A
+        self.params['sign']['DO']['КВО']['imit'] = 1 #A
         self._update()
 
     def btn_reset(self):
-        self.params['sign']['DO'][1]['imit'] = 0  #A
+        self.params['sign']['DO']['КВО']['imit'] = 0  #A
         self._update()
 
     def _update(self):
@@ -165,16 +165,10 @@ class cl_zd(QWidget):
         self.parent.model.update_model(self.params['sign'])  # обновляет таблицу table
 
     def Algoritm(self):
+        #запуск всех таймеров
+        for tm in self.tm:
+            tm.start()
 
-        # значение Логика = имитируемое значение
-        self.params['sign']['DO'][1]['logix'] = self.params['sign']['DO'][1]['imit']
-        self.params['sign']['DO'][2]['logix'] = self.params['sign']['DO'][2]['imit']
-        self.params['sign']['DO'][3]['logix'] = self.params['sign']['DO'][3]['imit']
-        self.params['sign']['DO'][4]['logix'] = self.params['sign']['DO'][4]['imit']
-        self.params['sign']['DO'][5]['logix'] = self.params['sign']['DO'][5]['imit']
-        self.params['sign']['DO'][6]['logix'] = self.params['sign']['DO'][6]['imit']
-        self.params['sign']['DO'][7]['logix'] = self.params['sign']['DO'][7]['imit']
-        self.params['sign']['DO'][8]['logix'] = self.params['sign']['DO'][8]['imit']
-        self.params['sign']['DO'][9]['logix'] = self.params['sign']['DO'][9]['imit']
-        self.params['sign']['DO'][10]['logix'] = self.params['sign']['DO'][10]['imit']
-        self.params['sign']['DO'][11]['logix'] = self.params['sign']['DO'][11]['imit']
+        self.tm[1].EN = (self.params['sign']['DI']['ОО']['logix'] == 1)  #A
+        if self.tm[1].DN:
+            self.params['sign']['DO']['МПО']['imit'] = 1  #A
