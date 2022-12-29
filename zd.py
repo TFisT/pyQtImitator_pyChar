@@ -166,9 +166,10 @@ class cl_zd(QWidget):
 
     def Algoritm(self):
         #запуск всех таймеров
-        for tm in self.tm:
-            tm.start()
+        for _tm in self.tm.values():
+            _tm.start()
 
-        self.tm[1].EN = (self.params['sign']['DI']['ОО']['logix'] == 1)  #A
+
+        self.tm[1].EN = (self.params['sign']['DI']['ОО']['logix'] == 1)
         if self.tm[1].DN:
-            self.params['sign']['DO']['МПО']['imit'] = 1  #A
+            self.params['sign']['DO']['МПО']['logix'] = 1
