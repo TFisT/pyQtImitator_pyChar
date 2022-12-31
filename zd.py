@@ -29,6 +29,11 @@ class cl_zd(QWidget):
             self.tm[key].name = self.params['timer'][key]['name']
             self.tm[key].SP = self.params['timer'][key]['SP']
 
+        self.__cmd_open = 0
+        self.__cmd_close = 0
+        self.__percent = 0
+        self.__tmp_percent = 0  #процент открытия на момент включения МП
+
     def paintEvent(self, event):
         #print(self.params['sign'])
         painter = QPainter(self)
@@ -39,48 +44,46 @@ class cl_zd(QWidget):
         if self.params['sign']['DO']['КВО']['io_val'] == 1:    #КВО
             painter.setBrush(Qt.green)
         else: painter.setBrush(Qt.yellow)
-        painter.drawRect(24, 38, 5, 34)                                                 # КВО
+        painter.drawRect(90, 38, 5, 34)                                                 # КВО
 
         if self.params['sign']['DO']['КВЗ']['io_val'] == 1:    #КВЗ
             painter.setBrush(Qt.green)
         else: painter.setBrush(Qt.yellow)
-        painter.drawRect(90, 38, 5, 34)                                                 # КВЗ
+        painter.drawRect(24, 38, 5, 34)                                                 # КВЗ
 
         if self.params['sign']['DO']['МПО']['io_val'] == 1:    #МПО
             painter.setBrush(Qt.green)
             primitives(painter).draw_triangle(Qt.green, 84, 20, 10, primitives.UP)      # МПО
+            if self.parent.tmOneSec == 0:
+                primitives(painter).draw_triangle(Qt.green, 29, 40, 30, primitives.RIGHT)  # Открывается
+                primitives(painter).draw_triangle(Qt.green, 90, 40, 30, primitives.LEFT)
+            else:
+                primitives(painter).draw_triangle(Qt.black, 29, 40, 30, primitives.RIGHT)
+                primitives(painter).draw_triangle(Qt.black, 90, 40, 30, primitives.LEFT)
 
         if self.params['sign']['DO']['МПЗ']['io_val'] == 1:    #МПЗ
             painter.setBrush(Qt.yellow)
             primitives(painter).draw_triangle(Qt.yellow, 87, 20, 10, primitives.DOWN)       # МПЗ
-
-        if self.params['sign']['DO']['КВО']['io_val'] == 1 and self.params['sign']['DO']['КВЗ']['io_val'] == 1:  # КВО и КВЗ
-            if self.params['sign']['DO']['МПО']['io_val'] == 1:    #МПО
-                if self.parent.tmOneSec == 0:
-                    primitives(painter).draw_triangle(Qt.green, 29, 40, 30, primitives.RIGHT)  # Открывается
-                    primitives(painter).draw_triangle(Qt.green, 90, 40, 30, primitives.LEFT)
-                else:
-                    primitives(painter).draw_triangle(Qt.black, 29, 40, 30, primitives.RIGHT)
-                    primitives(painter).draw_triangle(Qt.black, 90, 40, 30, primitives.LEFT)
-            elif self.params['sign']['DO']['МПЗ']['io_val'] == 1:  # МПЗ
-                if self.parent.tmOneSec == 0:
-                    primitives(painter).draw_triangle(Qt.yellow, 29, 40, 30, primitives.RIGHT)  # Закрывается
-                    primitives(painter).draw_triangle(Qt.yellow, 90, 40, 30, primitives.LEFT)
-                else:
-                    primitives(painter).draw_triangle(Qt.black, 29, 40, 30, primitives.RIGHT)
-                    primitives(painter).draw_triangle(Qt.black, 90, 40, 30, primitives.LEFT)
-            else:
-                primitives(painter).draw_triangle(Qt.green, 29, 40, 30, primitives.RIGHT)    # Промежуточное положение
+            if self.parent.tmOneSec == 0:
+                primitives(painter).draw_triangle(Qt.yellow, 29, 40, 30, primitives.RIGHT)  # Закрывается
                 primitives(painter).draw_triangle(Qt.yellow, 90, 40, 30, primitives.LEFT)
-        elif self.params['sign']['DO']['КВЗ']['io_val'] == 1:  # КВЗ
-            primitives(painter).draw_triangle(Qt.green, 29, 40, 30, primitives.RIGHT)    # Открыта
-            primitives(painter).draw_triangle(Qt.green, 90, 40, 30, primitives.LEFT)
-        elif self.params['sign']['DO']['КВО']['io_val'] == 1:    #КВО
-            primitives(painter).draw_triangle(Qt.yellow, 29, 40, 30, primitives.RIGHT)    # Закрыта
-            primitives(painter).draw_triangle(Qt.yellow, 90, 40, 30, primitives.LEFT)
-        else:
-            primitives(painter).draw_triangle(Qt.gray, 29, 40, 30, primitives.RIGHT)    # Не определено
-            primitives(painter).draw_triangle(Qt.gray, 90, 40, 30, primitives.LEFT)
+            else:
+                primitives(painter).draw_triangle(Qt.black, 29, 40, 30, primitives.RIGHT)
+                primitives(painter).draw_triangle(Qt.black, 90, 40, 30, primitives.LEFT)
+
+        if not (self.params['sign']['DO']['МПО']['io_val'] == 1 or self.params['sign']['DO']['МПЗ']['io_val'] == 1):  # не (МПО или МПЗ)
+            if self.params['sign']['DO']['КВО']['io_val'] == 1 and self.params['sign']['DO']['КВЗ']['io_val'] == 1:  # КВО и КВЗ
+                    primitives(painter).draw_triangle(Qt.green, 29, 40, 30, primitives.RIGHT)    # Промежуточное положение
+                    primitives(painter).draw_triangle(Qt.yellow, 90, 40, 30, primitives.LEFT)
+            elif self.params['sign']['DO']['КВО']['io_val'] == 1:  # КВЗ
+                primitives(painter).draw_triangle(Qt.green, 29, 40, 30, primitives.RIGHT)    # Открыта
+                primitives(painter).draw_triangle(Qt.green, 90, 40, 30, primitives.LEFT)
+            elif self.params['sign']['DO']['КВЗ']['io_val'] == 1:    #КВО
+                primitives(painter).draw_triangle(Qt.yellow, 29, 40, 30, primitives.RIGHT)    # Закрыта
+                primitives(painter).draw_triangle(Qt.yellow, 90, 40, 30, primitives.LEFT)
+            else:
+                primitives(painter).draw_triangle(Qt.gray, 29, 40, 30, primitives.RIGHT)    # Не определено
+                primitives(painter).draw_triangle(Qt.gray, 90, 40, 30, primitives.LEFT)
 
 
         if self.params['sign']['DO']['МВО']['io_val'] == 1 or self.params['sign']['DO']['МВЗ']['io_val'] == 1:    #Муфта (МВО) или (МВЗ)
@@ -123,7 +126,7 @@ class cl_zd(QWidget):
             painter.drawText(10, 87, "U")
 
         painter.setBrush(Qt.green)
-        st = str(1)
+        st = format(self.__percent, '.1f')
         rect = QRect(44, 75, 32, 16)
         painter.drawRect(rect)                                                # Процент открытия
         painter.drawText(rect, Qt.AlignCenter, st)
@@ -169,7 +172,53 @@ class cl_zd(QWidget):
         for _tm in self.tm.values():
             _tm.start()
 
-
-        self.tm[1].EN = (self.params['sign']['DI']['ОО']['logix'] == 1)
+        self.__cmd_open = self.params['sign']['DI']['ОО']['logix'] == 1 or self.__cmd_open  #защелка ОО в self.__cmd_open
+        self.__cmd_close = self.params['sign']['DI']['ЗО']['logix'] == 1 or self.__cmd_close    #защелка ЗО в self.__cmd_close
+        self.tm[1].EN = (self.__cmd_open or self.__cmd_close) #Включение МП
         if self.tm[1].DN:
-            self.params['sign']['DO']['МПО']['logix'] = 1
+            if self.__cmd_open:
+                self.params['sign']['DO']['МПО']['logix'] = 1
+                self.__tmp_percent = self.__percent #процент открытия на момент включения МП
+                self.__cmd_open = 0
+            if self.__cmd_close:
+                self.params['sign']['DO']['МПЗ']['logix'] = 1
+                self.__tmp_percent = self.__percent #процент открытия на момент включения МП
+                self.__cmd_close = 0
+
+        # Открыть
+        if self.params['sign']['DO']['МПО']['logix'] == 1:
+            self.tm[2].EN = (self.params['sign']['DO']['МПО']['logix'] == 1) #Сход с концевика закрыто
+            self.tm[3].EN = (self.params['sign']['DO']['МПО']['logix'] == 1)  #Движение задвижки
+            if self.tm[2].DN:
+                self.params['sign']['DO']['КВЗ']['logix'] = 0
+            if self.tm[3].DN:
+                self.params['sign']['DO']['КВО']['logix'] = 1
+                self.tm[5].EN = (self.params['sign']['DO']['МПО']['logix'] == 1) #Отключение МП
+            if self.tm[5].DN:
+                self.params['sign']['DO']['МПО']['logix'] = 0
+
+        #Закрыть
+        if self.params['sign']['DO']['МПЗ']['logix'] == 1:
+            self.tm[4].EN = (self.params['sign']['DO']['МПЗ']['logix'] == 1) #Сход с концевика открыто
+            self.tm[3].EN = (self.params['sign']['DO']['МПЗ']['logix'] == 1)  #Движение задвижки
+            if self.tm[4].DN:
+                self.params['sign']['DO']['КВО']['logix'] = 0
+            if self.tm[3].DN:
+                self.params['sign']['DO']['КВЗ']['logix'] = 1
+                self.tm[5].EN = (self.params['sign']['DO']['МПЗ']['logix'] == 1) #Отключение МП
+            if self.tm[5].DN:
+                self.params['sign']['DO']['МПЗ']['logix'] = 0
+
+        if self.tm[3].EN:
+            if self.params['sign']['DO']['МПО']['logix'] == 1:
+                #self.__percent = (self.tm[3].ACC / self.tm[3].SP)*100
+                if self.__percent < 100:
+                    self.__percent += 10000 / self.tm[3].SP
+                else:
+                    self.__percent = 100
+            if self.params['sign']['DO']['МПЗ']['logix'] == 1:
+                #self.__percent = 100 - (self.tm[3].ACC / self.tm[3].SP) * 100
+                if self.__percent > 0:
+                    self.__percent -= 10000 / self.tm[3].SP
+                else: self.__percent = 0
+
