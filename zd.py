@@ -172,8 +172,21 @@ class cl_zd(QWidget):
         for _tm in self.tm.values():
             _tm.start()
 
-        self.__cmd_open = self.params['sign']['DI']['ОО']['logix'] == 1 or self.__cmd_open  #защелка ОО в self.__cmd_open
-        self.__cmd_close = self.params['sign']['DI']['ЗО']['logix'] == 1 or self.__cmd_close    #защелка ЗО в self.__cmd_close
+        self.__cmd_open = (self.params['sign']['DI']['ОО']['logix'] == 1 and self.params['sign']['DO']['КВО']['logix'] == 0) or self.__cmd_open  #защелка ОО в self.__cmd_open
+        self.__cmd_close = (self.params['sign']['DI']['ЗО']['logix'] == 1 and self.params['sign']['DO']['КВЗ']['logix'] == 0)  or self.__cmd_close    #защелка ЗО в self.__cmd_close
+
+        if self.params['sign']['DI']['СД']['logix'] == 0:
+            self.__cmd_open = 0
+            self.params['sign']['DO']['МПО']['logix'] = 0
+            self.__cmd_close = 0
+            self.params['sign']['DO']['МПЗ']['logix'] = 0
+        if self.params['sign']['DI']['СДО']['logix'] == 0:
+            self.__cmd_open = 0
+            self.params['sign']['DO']['МПО']['logix'] = 0
+        if self.params['sign']['DI']['СДЗ']['logix'] == 0:
+            self.__cmd_close = 0
+            self.params['sign']['DO']['МПЗ']['logix'] = 0
+
         self.tm[1].EN = (self.__cmd_open or self.__cmd_close) #Включение МП
         if self.tm[1].DN:
             if self.__cmd_open:
@@ -186,39 +199,40 @@ class cl_zd(QWidget):
                 self.__cmd_close = 0
 
         # Открыть
+        #if self.params['sign']['DO']['МПО']['logix'] == 1:
+        self.tm[2].EN = (self.params['sign']['DO']['МПО']['logix'] == 1) and (self.params['sign']['DO']['КВЗ']['logix'] == 1) #Сход с концевика закрыто
+        self.tm[3].EN = (self.params['sign']['DO']['МПО']['logix'] == 1) or (self.params['sign']['DO']['МПЗ']['logix'] == 1)  #Движение задвижки
         if self.params['sign']['DO']['МПО']['logix'] == 1:
-            self.tm[2].EN = (self.params['sign']['DO']['МПО']['logix'] == 1) #Сход с концевика закрыто
-            self.tm[3].EN = (self.params['sign']['DO']['МПО']['logix'] == 1)  #Движение задвижки
             if self.tm[2].DN:
                 self.params['sign']['DO']['КВЗ']['logix'] = 0
-            if self.tm[3].DN:
+            if self.tm[3].DN or self.__percent == 100:
                 self.params['sign']['DO']['КВО']['logix'] = 1
                 self.tm[5].EN = (self.params['sign']['DO']['МПО']['logix'] == 1) #Отключение МП
             if self.tm[5].DN:
                 self.params['sign']['DO']['МПО']['logix'] = 0
 
         #Закрыть
+        self.tm[4].EN = (self.params['sign']['DO']['МПЗ']['logix'] == 1) and (self.params['sign']['DO']['КВО']['logix'] == 1) #Сход с концевика открыто
+        #self.tm[3].EN = (self.params['sign']['DO']['МПЗ']['logix'] == 1)  #Движение задвижки
         if self.params['sign']['DO']['МПЗ']['logix'] == 1:
-            self.tm[4].EN = (self.params['sign']['DO']['МПЗ']['logix'] == 1) #Сход с концевика открыто
-            self.tm[3].EN = (self.params['sign']['DO']['МПЗ']['logix'] == 1)  #Движение задвижки
             if self.tm[4].DN:
                 self.params['sign']['DO']['КВО']['logix'] = 0
-            if self.tm[3].DN:
+            if self.tm[3].DN or self.__percent == 0:
                 self.params['sign']['DO']['КВЗ']['logix'] = 1
                 self.tm[5].EN = (self.params['sign']['DO']['МПЗ']['logix'] == 1) #Отключение МП
             if self.tm[5].DN:
                 self.params['sign']['DO']['МПЗ']['logix'] = 0
 
-        if self.tm[3].EN:
-            if self.params['sign']['DO']['МПО']['logix'] == 1:
-                #self.__percent = (self.tm[3].ACC / self.tm[3].SP)*100
-                if self.__percent < 100:
-                    self.__percent += 10000 / self.tm[3].SP
-                else:
-                    self.__percent = 100
-            if self.params['sign']['DO']['МПЗ']['logix'] == 1:
-                #self.__percent = 100 - (self.tm[3].ACC / self.tm[3].SP) * 100
-                if self.__percent > 0:
-                    self.__percent -= 10000 / self.tm[3].SP
-                else: self.__percent = 0
+
+        if self.params['sign']['DO']['МПО']['logix'] == 1:
+            # self.__percent = (self.tm[3].ACC / self.tm[3].SP)*100
+            self.__percent += 10000 / (self.tm[3].SP*0.9) #0.9 подобран
+            if self.__percent > 100:
+                self.__percent = 100
+        if self.params['sign']['DO']['МПЗ']['logix'] == 1:
+            # self.__percent = 100 - (self.tm[3].ACC / self.tm[3].SP) * 100
+            self.__percent -= 10000 / (self.tm[3].SP*0.9)
+            if self.__percent < 0:
+                self.__percent = 0
+
 

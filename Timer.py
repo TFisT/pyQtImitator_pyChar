@@ -5,14 +5,15 @@ class clTimer():
     def __init__(self):
         self.name = ''
         self.EN = False
-        self.DN = True  # при создании, таймер как бы досчитал
+        self.DN = True  #при создании, таймер как бы досчитал
         self.SP = 0
         self.ACC = 0
         self.__ST = 0
 
     def start(self):
-        if self.DN:
+        if self.DN: #устанавливает DN только на один цикл
             self.DN = False
+            #self.ACC = 0
         if self.EN:
             self.DN = False
             self.ACC = round((time() - self.__ST)*1000) #секунды//1000 = миллисекунды
@@ -21,5 +22,5 @@ class clTimer():
                 self.EN = False
                 self.ACC = self.SP # для красоты, что бы по истечении времени ACC = SP
         else:
-            self.__ST = time()
+            self.__ST = time() # - self.ACC/1000 #при EN = 0  таймер приостанавливается
 
