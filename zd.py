@@ -73,17 +73,17 @@ class cl_zd(QWidget):
 
         if not (self.params['sign']['DO']['МПО']['io_val'] == 1 or self.params['sign']['DO']['МПЗ']['io_val'] == 1):  # не (МПО или МПЗ)
             if self.params['sign']['DO']['КВО']['io_val'] == 1 and self.params['sign']['DO']['КВЗ']['io_val'] == 1:  # КВО и КВЗ
-                    primitives(painter).draw_triangle(Qt.green, 29, 40, 30, primitives.RIGHT)    # Промежуточное положение
-                    primitives(painter).draw_triangle(Qt.yellow, 90, 40, 30, primitives.LEFT)
-            elif self.params['sign']['DO']['КВО']['io_val'] == 1:  # КВЗ
+                primitives(painter).draw_triangle(Qt.gray, 29, 40, 30, primitives.RIGHT)  # Не определено
+                primitives(painter).draw_triangle(Qt.gray, 90, 40, 30, primitives.LEFT)
+            elif self.params['sign']['DO']['КВО']['io_val'] == 1:  # КВО
                 primitives(painter).draw_triangle(Qt.green, 29, 40, 30, primitives.RIGHT)    # Открыта
                 primitives(painter).draw_triangle(Qt.green, 90, 40, 30, primitives.LEFT)
-            elif self.params['sign']['DO']['КВЗ']['io_val'] == 1:    #КВО
+            elif self.params['sign']['DO']['КВЗ']['io_val'] == 1:    #КВЗ
                 primitives(painter).draw_triangle(Qt.yellow, 29, 40, 30, primitives.RIGHT)    # Закрыта
                 primitives(painter).draw_triangle(Qt.yellow, 90, 40, 30, primitives.LEFT)
             else:
-                primitives(painter).draw_triangle(Qt.gray, 29, 40, 30, primitives.RIGHT)    # Не определено
-                primitives(painter).draw_triangle(Qt.gray, 90, 40, 30, primitives.LEFT)
+                primitives(painter).draw_triangle(Qt.green, 29, 40, 30, primitives.RIGHT)  # Промежуточное положение
+                primitives(painter).draw_triangle(Qt.yellow, 90, 40, 30, primitives.LEFT)
 
 
         if self.params['sign']['DO']['МВО']['io_val'] == 1 or self.params['sign']['DO']['МВЗ']['io_val'] == 1:    #Муфта (МВО) или (МВЗ)
